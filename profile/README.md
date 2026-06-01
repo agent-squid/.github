@@ -60,11 +60,12 @@ Topics and agents are not a rigid setup step. You can create a new `#topic` the 
 ```bash
 git clone https://github.com/agent-squid/squid
 cd squid
-bash install.sh
-bash start.sh
+cp config/squid.yaml.example config/squid.yaml
+bin/install.sh
+bin/start.sh
 ```
 
-Open:
+Open in your browser:
 
 ```text
 http://127.0.0.1:8000
@@ -106,6 +107,7 @@ codex-review -> codex,  default model, /tmp/squid/review
 | `/clear` | Clear the current session |
 | `/compact` | Compact or reset context |
 | `/filter` | Filter history to the current topic/agent lane |
+| `/remote` | Show QR code for mobile/tablet access via Tailscale |
 
 Session turns are queued per `#topic@agent` because order matters. Adhoc `!` turns are independent and run immediately.
 
@@ -123,27 +125,25 @@ Squid is most useful when your local machine can keep working while you are away
 
 Tailscale is a good fit for this. Its Personal plan is free for non-commercial personal use, and it creates a private WireGuard-based network across your own devices. Your phone, tablet, laptop, Mac mini, and workstation can talk inside the tailnet without opening a public port.
 
-Recommended setup:
+Squid always binds to `127.0.0.1` — it never exposes itself directly on the network. `bin/start.sh` automatically configures Tailscale’s HTTPS proxy if Tailscale is installed:
 
 ```bash
-# Keep Squid bound to localhost.
-HOST=127.0.0.1 PORT=8000 bash start.sh
-
-# Expose that localhost service only inside your Tailscale tailnet.
-tailscale serve --bg --http=8000 127.0.0.1:8000
+bin/start.sh   # configures tailscale serve automatically
 ```
 
-Then open Squid from your phone or tablet using the machine’s MagicDNS name or Tailscale address:
+Access from any enrolled device at:
 
 ```text
-http://mac-mini:8000
+https://<machine-name>/
 ```
 
-Important detail: `127.0.0.1` is local to the machine running Squid. Another device cannot directly reach a localhost-only Squid server by browsing to `http://<tailscale-ip>:8000`. `tailscale serve` is the bridge: it accepts tailnet traffic and proxies it to Squid’s localhost listener.
+Tailscale handles TLS — browsers show the padlock, no port number needed. On first visit from a new device, add your token:
 
-With this setup, Squid’s own web server is not listening on your normal LAN or the public internet. Access is gated by your Tailscale account, device membership, and tailnet policy. In practical personal use, your phone becomes a secure remote control for the local CLIs as long as the phone itself is secured.
+```text
+https://<machine-name>/?token=<your-token>
+```
 
-If you run `HOST=0.0.0.0`, Squid may be reachable on normal LAN interfaces too. That can be useful, but it is broader exposure than localhost plus `tailscale serve`.
+Or type `/remote` in the chat on your laptop to get a QR code — point your phone camera at it to open squid authenticated in one tap.
 
 ## How Squid Is Different
 
