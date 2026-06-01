@@ -131,16 +131,16 @@ Squid always binds to `127.0.0.1` — it never exposes itself directly on the ne
 bin/start.sh   # configures tailscale serve automatically
 ```
 
-Access from any enrolled device using the full Tailscale domain:
+Type `/remote` in the chat to get a QR code with the full HTTPS URL and your
+token already included — point your phone camera at it to open squid in one tap:
 
 ```text
-https://<machine-name>.<tailnet>.ts.net/
+https://<machine-name>.<tailnet>.ts.net/?token=<your-token>
 ```
 
 The full domain is required — the short hostname alone (`https://<machine-name>/`)
 won't work because Tailscale's TLS cert is scoped to `*.ts.net` and browsers
-enforce an exact match. Type `/remote` in the chat to get a QR code with
-the correct URL — point your phone camera at it to open squid in one tap.
+enforce an exact match.
 
 ## How Squid Is Different
 
