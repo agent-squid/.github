@@ -1,4 +1,4 @@
-# 🦑 Agent-Squid
+# 🦑 AgentSquid
 ```
     🦑 AGENT
     ██████╗ ██████╗ ██╗   ██╗██╗██████╗
@@ -9,11 +9,11 @@
    ╚═════╝  ╚══▀▀═╝  ╚═════╝ ╚═╝╚═════╝
 ```
 
-**A local web cockpit for CLI coding agents.**
+**Your Local Coding Agents, Unified**
 
-Agent-Squid lets you run Claude Code, OpenAI Codex, Cursor Agent, GitHub Copilot CLI, Google Antigravity, and other local agent CLIs from one browser UI. Your agents still run on your own machine, with your repo, shell tools, credentials, and native CLI sessions. Squid gives those sessions names, history, queues, controls, and phone/tablet access.
+Agent-Squid lets you run Claude Code, OpenAI Codex, Cursor Agent, OpenCode with DeepSeek Free, Claude with DeepSeek Pro, and Codex with other local models like Qwen via one browser UI. Your agents still run on your own machine, with your repo, shell tools, credentials, and native CLI sessions. Squid gives those sessions names, history, queues, controls, and phone/tablet access.
 
-Use it when your workflow has become a wall of unnamed terminal tabs.
+Use it when your workflow has become a wall of unnamed terminal tabs or you need to use multiple coding agents; a couple of $20 agents alongside a free coding agent.
 
 ```text
 #launch@claude write the release notes
@@ -21,6 +21,7 @@ Use it when your workflow has become a wall of unnamed terminal tabs.
 #bug@cursor reproduce the auth failure
 #ops@copilot summarize the incident notes
 ```
+NOTE: These topics are sticky. Once you are in the topic, no need to type it. :)
 
 ## Why
 
@@ -28,13 +29,13 @@ CLI agents are useful, but the workflow gets messy quickly:
 
 - You have ten Claude Code terminals open and cannot remember which one is doing what.
 - A terminal closes or the machine reboots, and reviving the right session becomes a hunt through resume pickers, session IDs, cwd-sensitive history, and shell scrollback.
-- Long-running sessions grow, drift, stall, and need compaction or reset.
-- It is hard to compare a fully resumed session against a fresh prompt with only limited historical context.
+- Long-running sessions grow, drift, stall, and need compaction or reset but afraid to lose details.
+- There is no way to select responses as context for the next new session, so you have to tell it again.
 - Different agent CLIs have different commands, resume flags, slash commands, output formats, and UI assumptions.
 - Token usage is usually hidden in the flow instead of attached clearly to each prompt and response.
-- The best machine for the job is often not the device in your hand. It is your Mac mini, workstation, or always-on local box with the repo and CLIs already configured.
+- You want to do couch coding, but /remote doesn't cut it because not optimized for mobile.
 
-Squid turns those local agents into named, durable lanes you can control from a browser.
+Squid turns those local agents into named, durable lanes you can control from a single chat thread with filter support.
 
 Topics and agents are not a rigid setup step. You can create a new `#topic` the moment you type it, switch agents with `@agent`, and clean up old workstreams when they are done. Squid treats tags as the UI for your agent work: lightweight enough to create dynamically, durable enough to recover later, and visible enough that you are not guessing which terminal was doing what.
 
@@ -44,11 +45,12 @@ Topics and agents are not a rigid setup step. You can create a new `#topic` the 
 - **Dynamic tags:** create topics as you type, reuse sticky agents, filter by tag, and delete stale topics when the work is done.
 - **Native resumable sessions:** Squid tracks session handles while the CLI owns its real context.
 - **Parallel work:** different topics and agents run independently.
-- **Adhoc mode:** `#topic@agent!` runs a fresh one-off job immediately without polluting the main session.
-- **Session vs. limited-context comparison:** compare a fully resumed lane against an adhoc prompt that includes only the last N exchanges.
+- **Adhoc (Goldfish) mode:** `#topic@agent!` runs a fresh one-off job immediately without polluting the main session. You can add the adhoc output to session context easily. (merging context)
+- **Session vs. limited-context comparison:** compare a session lane against an adhoc prompt that includes only the last N exchanges.
 - **Live progress bubble:** watch queued state, tool/status output, and partial response progress while the CLI is working.
-- **Auto-compaction settings:** keep long-running lanes useful without manually babysitting context forever.
-- **Context bookmarks:** pin a useful answer and inject it into another session or adhoc turn.
+- **Auto-compaction hint:** alerts you to /clear the session if it's stale or too many turns.
+- **Context pin:** pin a useful answer and inject it into another session or adhoc turn.
+- **Context bookmark:** bookmark a useful answer and use it later for context.
 - **Process controls:** stop one process from the UI, stop by command, stop a topic, drain queues, clear sessions, and compact/reset context.
 - **History and filtering:** scan past work by topic, agent, or adhoc lane.
 - **Analytics:** review usage by time, topic, or agent, plus live process state.
@@ -58,15 +60,11 @@ Topics and agents are not a rigid setup step. You can create a new `#topic` the 
 ## Quick Start
 
 ```bash
-git clone https://github.com/agent-squid/squid
-cd squid
-cp config/squid.yaml.example config/squid.yaml
-bin/install.sh
-bin/start.sh
+curl -L https://github.com/agent-squid/squid/archive/refs/tags/v0.1.tar.gz | tar xz
+./squid-0.1/bin/start.sh 
 ```
 
 Open in your browser:
-
 ```text
 http://127.0.0.1:8000
 ```
@@ -75,23 +73,14 @@ Install at least one supported CLI:
 
 | Backend | CLI | Install |
 |---|---|---|
-| Claude Code | `claude` | `npm install -g @anthropic-ai/claude-code` |
-| OpenAI Codex | `codex` | `npm install -g @openai/codex` |
-| Cursor Agent | `cursor-agent` | install from Cursor |
-| GitHub Copilot | `copilot` | `gh extension install github/gh-copilot` |
-| Google Antigravity | `agy` | install from Antigravity |
+| Claude Code | `claude` | `curl -fsSL https://claude.ai/install.sh | bash` |
+| OpenAI Codex | `codex` | `curl -fsSL https://chatgpt.com/codex/install.sh | sh` |
+| Cursor Agent | `cursor-agent` | `curl -fsS https://cursor.com/install | bash` |
+| OpenCode | `opencode` | `curl -fsSL https://opencode.ai/install | bash` |
 
 Create agents in the UI. An agent is a named config:
-
 ```text
 name + backend + model + working directory
-```
-
-Examples:
-
-```text
-claude-main  -> claude, default model, /tmp/squid/work
-codex-review -> codex,  default model, /tmp/squid/review
 ```
 
 ## Basic Usage
@@ -99,19 +88,18 @@ codex-review -> codex,  default model, /tmp/squid/review
 | Syntax | Meaning |
 |---|---|
 | `#topic@agent message` | Continue that topic/agent session |
-| `#topic message` | Use the sticky agent for that topic |
 | `#topic@agent! message` | Run a parallel adhoc turn with no session history |
-| `#topic@agent!3 message` | Run adhoc with only the last 3 exchanges as context |
+| `#topic@agent!3 message` | Run adhoc with only the last 3 exchanges (normal, searched, filtered) as context |
 | `/stop` | Stop the current process scope |
 | `/stopall` | Stop and drain the current topic |
-| `/clear` | Clear the current session |
-| `/compact` | Compact or reset context |
-| `/filter` | Filter history to the current topic/agent lane |
+| `/clear` | Create new session |
+| `/f`, `/filter` | Filter history to the current topic/agent lane |
+| `/s`, `/search` | Search history to the current topic/agent lane |
 | `/remote` | Show QR code for mobile/tablet access via Tailscale |
 
-Session turns are queued per `#topic@agent` because order matters. Adhoc `!` turns are independent and run immediately.
+Session turns are queued per `#topic@agent` for the tasks with order matters. Adhoc `!` turns are independent and run immediately.
 
-This makes comparison easy. Ask the fully resumed session with `#topic@agent`, then ask a limited-context version with `#topic@agent!3`, `#topic@agent!1`, or `#topic@agent!`. You can see whether the long session is helping, whether stale context is hurting, and how much token usage each path costs.
+This makes comparison easy. Ask the session with `#topic@agent`, then ask a limited-context version with `#topic@agent!3`, `#topic@agent!1`, or `#topic@agent!`. You can see whether the long session is helping, whether stale context is hurting, and how much token usage each path costs.
 
 Tags are created dynamically. If you send `#release@claude ...`, Squid creates or updates the `release` topic and remembers `claude` as its sticky agent. Later, `#release ...` continues that lane without retyping the agent. Topic autocomplete lets you browse existing tags, and old topics can be hidden or deleted when they are no longer useful.
 
@@ -125,7 +113,7 @@ Squid is most useful when your local machine can keep working while you are away
 
 Tailscale is a good fit for this. Its Personal plan is free for non-commercial personal use, and it creates a private WireGuard-based network across your own devices. Your phone, tablet, laptop, Mac mini, and workstation can talk inside the tailnet without opening a public port.
 
-Squid always binds to `127.0.0.1` — it never exposes itself directly on the network. `bin/start.sh` automatically configures Tailscale’s HTTPS proxy if Tailscale is installed:
+Squid always binds to `127.0.0.1`, it never exposes itself directly on the network. `bin/start.sh` automatically configures Tailscale’s HTTPS proxy if Tailscale is installed:
 
 ```bash
 bin/start.sh   # configures tailscale serve automatically
@@ -148,14 +136,14 @@ Squid is not another general AI chat app. Open WebUI and LibreChat are broad sel
 
 Squid is narrower: it controls real local coding-agent CLIs and preserves their session behavior.
 
-Most chat UIs send messages to a model API and render text back. Even when they support tools or agents, the chat app is usually the runtime. Squid is different: the runtime is still the local CLI agent. Claude Code, Codex, Cursor Agent, Copilot CLI, or Antigravity is the process doing the work on your machine. Squid is the interactive control layer around those processes.
+Most chat UIs send messages to a model API and render text back. Even when they support tools or agents, the chat app is usually the runtime. Squid is different: the runtime is still the local CLI agent. Claude Code, Codex, Cursor Agent, OpenCode are the process doing the work on your machine. Squid is the interactive control layer around those processes.
 
 That difference matters:
 
-- **Real CLI sessions, not copied chat history:** Squid resumes the agent’s native session instead of pretending to be the agent with a replayed transcript.
-- **Working-directory awareness:** sessions are tied to the cwd where the CLI actually runs, which matters for local project context and resume behavior.
+- **Real CLI sessions, not copied chat history:** Squid uses the agent’s native session instead of pretending to be the agent with a replayed transcript.
+- **Working-directory awareness:** sessions are tied to the cwd where the CLI actually runs, which matters for local project context and resume behavior. You can change it to your local home to inherit all the settings. (note: this will burn a bit more tokens for additional context)
 - **Process ownership:** Squid can show live processes, kill the exact running job, drain queued jobs, and recover after disconnects.
-- **Topic and agent lanes:** `#topic@agent` is closer to a named terminal workspace than a chat room.
+- **Topic and agent lanes:** `#topic@agent` is closer to a named terminal workspace than a chat room. You can easily filter it to look like a chat room.
 - **Progress while work happens:** the thought bubble surfaces status, queued state, tool activity, and partial output before the final answer lands.
 - **UI plus command control:** click to stop a specific run, or type commands like `/stop`, `/stopall`, `/clear`, `/compact`, and `/filter`.
 - **Analytics attached to real work:** token usage is tied to each prompt and can be rolled up by topic, agent, or time.
@@ -165,7 +153,7 @@ That difference matters:
 | Category | Examples | Squid's difference |
 |---|---|---|
 | Self-hosted AI chat | Open WebUI, LibreChat | Squid runs local CLI coding agents instead of replacing them with a provider chat UI. |
-| Single-agent CLIs | Claude Code, Codex CLI, Cursor Agent, Copilot CLI | Squid gives them shared browser/mobile UI, topics, queues, history, controls, and analytics. |
+| Single-agent CLIs | Claude Code, Codex CLI, Cursor Agent, OpenCode | Squid gives them shared browser/mobile UI, topics, queues, history, controls, and analytics. |
 | IDE agents | Cursor, Cline, VS Code Copilot | Squid is editor-agnostic and works even when the IDE is not open. |
 | Terminal pair programmers | Aider, OpenCode | Squid is an orchestration layer, not a coding engine. |
 
