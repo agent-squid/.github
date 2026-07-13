@@ -9,6 +9,35 @@
    ╚═════╝  ╚══▀▀═╝  ╚═════╝ ╚═╝╚═════╝
 ```
 
+## Quick Start
+
+1. Install at least one supported CLI and check whether you can use it (/login):
+
+| Backend | CLI | Install |
+|---|---|---|
+| Claude Code | `claude` | `curl -fsSL https://claude.ai/install.sh \| bash` |
+| OpenAI Codex | `codex` | `curl -fsSL https://chatgpt.com/codex/install.sh \| sh` |
+| Cursor Agent | `cursor-agent` | `curl -fsS https://cursor.com/install \| bash` |
+| OpenCode | `opencode` | `curl -fsSL https://opencode.ai/install \| bash` |
+| Pi | `pi` | `curl -fsSL https://pi.dev/install.sh \| sh` |
+
+2. Install and run AgentSquid!
+
+```bash
+curl -L https://github.com/agent-squid/squid/archive/refs/tags/v0.1.tar.gz | tar xz
+./squid-0.1/bin/start.sh 
+```
+
+3. Open in your browser:
+```text
+http://127.0.0.1:8000
+```
+
+Create agents in the UI. An agent is a named config:
+```text
+agent name (@agent) = harness (Claude Code) + provider (Claude) + model (claude-sonnet-5) + working directory (CLAUDE.md, etc.)
+```
+
 **Your Local Coding Agents, Unified**
 
 Agent-Squid is a **meta harness** tool which lets you run Claude Code, OpenAI Codex, Cursor Agent, OpenCode, Pi **coding agents** with **multiple providers**, such as, Claude, GPT, Cursor, OpenCode, NVIDIA, DeepSeek, local LLMs via **one browser UI**. Your agents still run on your own machine, with your repo, shell tools, credentials, and native CLI sessions. Squid gives those sessions names, history, queues, controls, and phone/tablet access.
@@ -56,32 +85,6 @@ Topics and agents are not a rigid setup step. You can create a new `#topic` the 
 - **Analytics:** review usage by time, topic, or agent, plus live process state.
 - **Per-prompt usage:** every completed prompt can show input, output, cache, reasoning, cost, duration, and quota signals when the backend exposes them.
 - **Phone/tablet access:** lie on the couch while your local machine keeps coding.
-
-## Quick Start
-
-```bash
-curl -L https://github.com/agent-squid/squid/archive/refs/tags/v0.1.tar.gz | tar xz
-./squid-0.1/bin/start.sh 
-```
-
-Open in your browser:
-```text
-http://127.0.0.1:8000
-```
-
-Install at least one supported CLI:
-
-| Backend | CLI | Install |
-|---|---|---|
-| Claude Code | `claude` | `curl -fsSL https://claude.ai/install.sh | bash` |
-| OpenAI Codex | `codex` | `curl -fsSL https://chatgpt.com/codex/install.sh | sh` |
-| Cursor Agent | `cursor-agent` | `curl -fsS https://cursor.com/install | bash` |
-| OpenCode | `opencode` | `curl -fsSL https://opencode.ai/install | bash` |
-
-Create agents in the UI. An agent is a named config:
-```text
-name + backend + model + working directory
-```
 
 ## Basic Usage
 
