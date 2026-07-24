@@ -24,8 +24,7 @@
 2. Install and run AgentSquid!
 
 ```bash
-curl -L https://github.com/agent-squid/squid/archive/refs/tags/v0.1.tar.gz | tar xz
-./squid-0.1/bin/start.sh 
+curl -fsSL https://agentsquid.ai/install.sh | sh 
 ```
 
 3. Open in your browser:
